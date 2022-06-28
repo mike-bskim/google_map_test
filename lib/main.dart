@@ -92,55 +92,55 @@ class MapSampleState extends State<MapSample> {
     });
   }
 
-  void _searchPlaces(
-    String locationName,
-    double latitude,
-    double longitude,
-  ) async {
-    setState(() {
-      _markers.clear();
-    });
-
-    final String url =
-        '$baseUrl?key=$API_KEY&location=$latitude,$longitude&radius=1000&language=ko&keyword=$locationName';
-
-    final response = await http.get(Uri.parse(url));
-
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-
-      if (data['status'] == 'OK') {
-        GoogleMapController controller = await _controller.future;
-        controller.animateCamera(
-          CameraUpdate.newLatLng(
-            LatLng(latitude, longitude),
-          ),
-        );
-
-        setState(() {
-          final foundPlaces = data['results'];
-
-          for (int i = 0; i < foundPlaces.length; i++) {
-            _markers.add(
-              Marker(
-                markerId: MarkerId(foundPlaces[i]['place_id']),
-                position: LatLng(
-                  foundPlaces[i]['geometry']['location']['lat'],
-                  foundPlaces[i]['geometry']['location']['lng'],
-                ),
-                infoWindow: InfoWindow(
-                  title: foundPlaces[i]['name'],
-                  snippet: foundPlaces[i]['vicinity'],
-                ),
-              ),
-            );
-          }
-        });
-      }
-    } else {
-      debugPrint('Fail to fetch place data');
-    }
-  }
+  // void _searchPlaces(
+  //   String locationName,
+  //   double latitude,
+  //   double longitude,
+  // ) async {
+  //   setState(() {
+  //     _markers.clear();
+  //   });
+  //
+  //   final String url =
+  //       '$baseUrl?key=$API_KEY&location=$latitude,$longitude&radius=1000&language=ko&keyword=$locationName';
+  //
+  //   final response = await http.get(Uri.parse(url));
+  //
+  //   if (response.statusCode == 200) {
+  //     final data = json.decode(response.body);
+  //
+  //     if (data['status'] == 'OK') {
+  //       GoogleMapController controller = await _controller.future;
+  //       controller.animateCamera(
+  //         CameraUpdate.newLatLng(
+  //           LatLng(latitude, longitude),
+  //         ),
+  //       );
+  //
+  //       setState(() {
+  //         final foundPlaces = data['results'];
+  //
+  //         for (int i = 0; i < foundPlaces.length; i++) {
+  //           _markers.add(
+  //             Marker(
+  //               markerId: MarkerId(foundPlaces[i]['place_id']),
+  //               position: LatLng(
+  //                 foundPlaces[i]['geometry']['location']['lat'],
+  //                 foundPlaces[i]['geometry']['location']['lng'],
+  //               ),
+  //               infoWindow: InfoWindow(
+  //                 title: foundPlaces[i]['name'],
+  //                 snippet: foundPlaces[i]['vicinity'],
+  //               ),
+  //             ),
+  //           );
+  //         }
+  //       });
+  //     }
+  //   } else {
+  //     debugPrint('Fail to fetch place data');
+  //   }
+  // }
 
   void _submit() {
     if (!_fbKey.currentState!.validate()) {
@@ -150,18 +150,21 @@ class MapSampleState extends State<MapSample> {
     _fbKey.currentState!.save();
     final inputValues = _fbKey.currentState!.value;
     final id = inputValues['placeId'];
-    debugPrint(id);
 
     final foundPlace = places.firstWhere(
       (place) => place['id'] == id,
-      // orElse: () => null,
+      orElse: () => {}, //'id': 'null', 'placeName': 'null'
     );
 
-    debugPrint(foundPlace['placeName']);
+    debugPrint(foundPlace.toString());
 
-    _searchPlaces(foundPlace['placeName']!, 37.53609444, 126.9675222);//37.498295, 127.026437);
-
-    Navigator.of(context).pop();
+    if(foundPlace['placeName'] == null){
+      Navigator.of(context).pop();
+      return;
+    } else {
+      // _searchPlaces(foundPlace['placeName']!, 37.53609444, 126.9675222);//37.498295, 127.026437);
+      Navigator.of(context).pop();
+    }
   }
 
   void _gotoGangnam() {
@@ -195,7 +198,7 @@ class MapSampleState extends State<MapSample> {
                     child: Column(
                       children: <Widget>[
                         FormBuilderDropdown(
-                          name: 'placeId',
+                          name: 'placeId', // map 의 키값
                           // attribute: 'placeId',
                           hint: const Text('어떤 장소를 원하세요?'),
                           decoration: const InputDecoration(
@@ -267,7 +270,7 @@ class MapSampleState extends State<MapSample> {
                 const SizedBox(height: 10),
                 FloatingActionButton.extended(
                   heroTag: 'btn2',
-                  label: const Text('강남에서 볼까?'),
+                  label: const Text('어디에서 볼까?'),
                   icon: const Icon(Icons.zoom_out_map),
                   elevation: 8,
                   backgroundColor: Colors.blue[400],
