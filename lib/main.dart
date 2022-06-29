@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:form_builder_validators/form_builder_validators.dart';
 
 import 'constants/constants.dart';
+import 'models/model_google.dart';
 
 void main() => runApp(const MyApp());
 
@@ -63,7 +64,7 @@ class MapSampleState extends State<MapSample> {
   );
 
   void _onMapCreated(GoogleMapController controller) {
-    // 이제 이 콘트롤을 프로그램애서 사용중비 완료.
+    // 이제 이 콘트롤을 프로그램애서 사용하기 위한 준비 완료.
     _controller.complete(controller);
   }
 
@@ -92,55 +93,69 @@ class MapSampleState extends State<MapSample> {
     });
   }
 
-  // void _searchPlaces(
-  //   String locationName,
-  //   double latitude,
-  //   double longitude,
-  // ) async {
-  //   setState(() {
-  //     _markers.clear();
-  //   });
-  //
-  //   final String url =
-  //       '$baseUrl?key=$API_KEY&location=$latitude,$longitude&radius=1000&language=ko&keyword=$locationName';
-  //
-  //   final response = await http.get(Uri.parse(url));
-  //
-  //   if (response.statusCode == 200) {
-  //     final data = json.decode(response.body);
-  //
-  //     if (data['status'] == 'OK') {
-  //       GoogleMapController controller = await _controller.future;
-  //       controller.animateCamera(
-  //         CameraUpdate.newLatLng(
-  //           LatLng(latitude, longitude),
-  //         ),
-  //       );
-  //
-  //       setState(() {
-  //         final foundPlaces = data['results'];
-  //
-  //         for (int i = 0; i < foundPlaces.length; i++) {
-  //           _markers.add(
-  //             Marker(
-  //               markerId: MarkerId(foundPlaces[i]['place_id']),
-  //               position: LatLng(
-  //                 foundPlaces[i]['geometry']['location']['lat'],
-  //                 foundPlaces[i]['geometry']['location']['lng'],
-  //               ),
-  //               infoWindow: InfoWindow(
-  //                 title: foundPlaces[i]['name'],
-  //                 snippet: foundPlaces[i]['vicinity'],
-  //               ),
-  //             ),
-  //           );
-  //         }
-  //       });
-  //     }
-  //   } else {
-  //     debugPrint('Fail to fetch place data');
-  //   }
-  // }
+  void _searchPlaces({
+    required String locationName,
+    required double latitude,
+    required double longitude,
+  }) async {
+    setState(() {
+      _markers.clear();
+    });
+
+    //radius=1000 1km 이내. 언어 한국어,
+    final String url =
+        '$baseUrl?key=$API_KEY&location=$latitude,$longitude&radius=500&language=ko&keyword=$locationName';
+    debugPrint('url: [$url]');
+
+    final response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+
+
+      if (data['status'] == 'OK') {
+        GoogleMapController controller = await _controller.future;
+        controller.animateCamera(
+          CameraUpdate.newLatLng(
+            LatLng(latitude, longitude),
+          ),
+        );
+
+        setState(() {
+          final foundPlaces = data['results'];
+          debugPrint(foundPlaces.toString());
+
+          //AddressModel addressModel = AddressModel.fromJson(resp.data['response']);
+          //   Results.fromJson(dynamic json) {
+
+          for (int i = 0; i < foundPlaces.length; i++) {
+            ModelGoogle googleResults = ModelGoogle.fromJson(foundPlaces[i]);
+            // debugPrint('store name: [${googleResults.name}]');
+            _markers.add(
+              Marker(
+                // markerId: MarkerId(foundPlaces[i]['place_id']),
+                markerId: MarkerId(googleResults.placeId),
+                position: LatLng(
+                  googleResults.geometry.location.lat,
+                  googleResults.geometry.location.lng,
+                  // foundPlaces[i]['geometry']['location']['lat'],
+                  // foundPlaces[i]['geometry']['location']['lng'],
+                ),
+                infoWindow: InfoWindow(
+                  // title: foundPlaces[i]['name'],
+                  // snippet: foundPlaces[i]['vicinity'],
+                  title: googleResults.name,
+                  snippet: googleResults.vicinity,
+                ),
+              ),
+            );
+          }
+        });
+      }
+    } else {
+      debugPrint('Fail to fetch place data');
+    }
+  }
 
   void _submit() {
     if (!_fbKey.currentState!.validate()) {
@@ -152,17 +167,21 @@ class MapSampleState extends State<MapSample> {
     final id = inputValues['placeId'];
 
     final foundPlace = places.firstWhere(
-      (place) => place['id'] == id,
+          (place) => place['id'] == id,
       orElse: () => {}, //'id': 'null', 'placeName': 'null'
     );
 
     debugPrint(foundPlace.toString());
 
-    if(foundPlace['placeName'] == null){
+    if (foundPlace['placeName'] == null) {
       Navigator.of(context).pop();
       return;
     } else {
-      // _searchPlaces(foundPlace['placeName']!, 37.53609444, 126.9675222);//37.498295, 127.026437);
+      _searchPlaces(
+        locationName: foundPlace['placeName']!,
+        latitude: 37.53609444,
+        longitude: 126.9675222,
+      ); //37.498295, 127.026437);
       Navigator.of(context).pop();
     }
   }
