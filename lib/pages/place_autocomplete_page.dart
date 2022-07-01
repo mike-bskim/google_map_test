@@ -7,14 +7,14 @@ import 'dart:async';
 import '../models/place.dart';
 import '../services/google_map_service.dart';
 
-class PlaceAutocomplete extends StatefulWidget {
-  const PlaceAutocomplete({Key? key}) : super(key: key);
+class PlaceAutocompletePage extends StatefulWidget {
+  const PlaceAutocompletePage({Key? key}) : super(key: key);
 
   @override
-  PlaceAutocompleteState createState() => PlaceAutocompleteState();
+  PlaceAutocompletePageState createState() => PlaceAutocompletePageState();
 }
 
-class PlaceAutocompleteState extends State<PlaceAutocomplete> {
+class PlaceAutocompletePageState extends State<PlaceAutocompletePage> {
   final TextEditingController _searchController = TextEditingController();
   var uuid = const Uuid();
   // 패키지 버전 및 null safety 업데이트로 인해서 변수 초기화 절차가 달라졌다
@@ -147,7 +147,7 @@ class PlaceAutocompleteState extends State<PlaceAutocomplete> {
                 // 0.5초 동안 입력변화가 없으면 suggestionsCallback 실행
                 // 검색어(pattern)를 이용하여 유사 결과 제안
                 suggestionsCallback: (pattern) async {
-                  if (sessionToken.isNotEmpty) {
+                  if (sessionToken.isEmpty) { //  == null, isNotEmpty
                     sessionToken = uuid.v4();
                   }
 

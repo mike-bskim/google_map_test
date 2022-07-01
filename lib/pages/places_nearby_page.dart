@@ -11,14 +11,14 @@ import '../constants/constants.dart';
 import '../key.dart';
 import '../models/model_google.dart';
 
-class PlacesNearby extends StatefulWidget {
-  const PlacesNearby({Key? key}) : super(key: key);
+class PlacesNearbyPage extends StatefulWidget {
+  const PlacesNearbyPage({Key? key}) : super(key: key);
 
   @override
-  State<PlacesNearby> createState() => PlacesNearbyState();
+  State<PlacesNearbyPage> createState() => PlacesNearbyPageState();
 }
 
-class PlacesNearbyState extends State<PlacesNearby> {
+class PlacesNearbyPageState extends State<PlacesNearbyPage> {
   final Completer<GoogleMapController> _controller = Completer();
   MapType _googleMapType = MapType.normal;
   int _mapType = 0;

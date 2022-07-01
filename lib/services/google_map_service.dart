@@ -55,7 +55,7 @@ class GoogleMapServices {
     return placeDetail;
   }
 
-
+// 위도 경도 정보를 이용해서 주소 정보를 찾는 함수
   static Future<String> getAddrFromLocation(double lat, double lng) async {
     const String baseUrl = 'https://maps.googleapis.com/maps/api/geocode/json';
     String url = '$baseUrl?latlng=$lat,$lng&key=$googleApiKey&language=ko';
@@ -63,7 +63,7 @@ class GoogleMapServices {
     final http.Response response = await http.get(Uri.parse(url));
     final responseData = json.decode(response.body);
     final formattedAddr = responseData['results'][0]['formatted_address'];
-    debugPrint(formattedAddr);
+    debugPrint('google_map_service >> getAddrFromLocation: [$formattedAddr]');
 
     return formattedAddr;
   }
