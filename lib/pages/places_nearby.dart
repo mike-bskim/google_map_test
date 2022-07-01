@@ -37,7 +37,7 @@ class PlacesNearbyState extends State<PlacesNearby> {
     );
   }
 
-  final CameraPosition _initialCameraPostion = const CameraPosition(
+  final CameraPosition _initialCameraPosition = const CameraPosition(
     target: LatLng(37.53609444, 126.9675222),
     zoom: 14,
   );
@@ -83,7 +83,7 @@ class PlacesNearbyState extends State<PlacesNearby> {
 
     //radius=500 500m 이내. 언어 한국어,
     final String url =
-        '$baseUrl?key=$API_KEY&location=$latitude,$longitude&radius=500&language=ko&keyword=$locationName';
+        '$baseUrl?key=$googleApiKey&location=$latitude,$longitude&radius=500&language=ko&keyword=$locationName';
 
     final response = await http.get(Uri.parse(url));
 
@@ -235,7 +235,7 @@ class PlacesNearbyState extends State<PlacesNearby> {
         children: <Widget>[
           GoogleMap(
             mapType: _googleMapType,
-            initialCameraPosition: _initialCameraPostion,
+            initialCameraPosition: _initialCameraPosition,
             onMapCreated: _onMapCreated,
             myLocationEnabled: true,
             markers: _markers,

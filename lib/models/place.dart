@@ -1,20 +1,23 @@
 class Place {
   final String description;
   final String placeId;
+  final String name;
 
   Place({
     required this.description,
     required this.placeId,
+    required this.name,
   });
 
-  Place.fromJson(Map<String, dynamic> json)
-      : description = json['description'],
-        placeId = json['place_id'];
-
-  // factory Place.fromJson(Map<String, dynamic> json) => Place(
-  //       description: json['description'],
-  //       placeId: json['place_id'],
-  //     );
+  // Place.fromJson(Map<String, dynamic> json)
+  //     : description = json['description'],
+  //       placeId = json['place_id'];
+  //
+  factory Place.fromJson(Map<String, dynamic> json) => Place(
+        description: json['description'],
+        placeId: json['place_id'],
+        name: json['structured_formatting']['main_text'],
+      );
 
   Map<String, dynamic> toMap() {
     return {
@@ -48,15 +51,15 @@ class PlaceDetail {
   });
 
   PlaceDetail.fromJson(Map<String, dynamic> json)
-      : placeId = json['place_id'],
-        formattedAddress = json['formatted_address'],
-        formattedPhoneNumber = json['formatted_phone_number'],
-        name = json['name'],
-        rating = json['rating'].toDouble(),
-        vicinity = json['vicinity'],
+      : placeId = json['place_id'] ?? '',
+        formattedAddress = json['formatted_address'] ?? '',
+        formattedPhoneNumber = json['formatted_phone_number'] ?? '',
+        name = json['name'] ?? '',
+        rating = json['rating'].toDouble() ?? 0.0,
+        vicinity = json['vicinity'] ?? '',
         website = json['website'] ?? '',
-        lat = json['geometry']['location']['lat'],
-        lng = json['geometry']['location']['lng'];
+        lat = json['geometry']['location']['lat'] ?? 0.0,
+        lng = json['geometry']['location']['lng'] ?? 0.0;
 
   Map<String, dynamic> toMap() {
     return {

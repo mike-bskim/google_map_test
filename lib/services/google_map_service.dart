@@ -15,7 +15,7 @@ class GoogleMapServices {
         'https://maps.googleapis.com/maps/api/place/autocomplete/json';
     String type = 'establishment';
     String url =
-        '$baseUrl?input=$query&key=$API_KEY&type=$type&language=ko&components=country:kr&sessiontoken=$sessionToken';
+        '$baseUrl?input=$query&key=$googleApiKey&type=$type&language=ko&components=country:kr&sessiontoken=$sessionToken';
 
     debugPrint('url: $url');
     debugPrint('Autocomplete(sessionToken): $sessionToken');
@@ -29,6 +29,8 @@ class GoogleMapServices {
     for (int i = 0; i < predictions.length; i++) {
       final place = Place.fromJson(predictions[i]);
       suggestions.add(place);
+      // debugPrint('${suggestions[i].description}, ${suggestions[i].placeId}');
+      // debugPrint('${place.description}, ${place.placeId}');
     }
 
     return suggestions;
@@ -39,7 +41,7 @@ class GoogleMapServices {
     const String baseUrl =
         'https://maps.googleapis.com/maps/api/place/details/json';
     String url =
-        '$baseUrl?key=$API_KEY&place_id=$placeId&language=ko&sessiontoken=$token';
+        '$baseUrl?key=$googleApiKey&place_id=$placeId&language=ko&sessiontoken=$token';
 
     debugPrint('Place Detail(sessionToken): $sessionToken');
     final http.Response response = await http.get(Uri.parse(url));
@@ -47,14 +49,14 @@ class GoogleMapServices {
     final result = responseData['result'];
 
     final PlaceDetail placeDetail = PlaceDetail.fromJson(result);
-    debugPrint(placeDetail.toMap().toString());
+    // debugPrint(placeDetail.toMap().toString());
 
     return placeDetail;
   }
 
   static Future<String> getAddrFromLocation(double lat, double lng) async {
     const String baseUrl = 'https://maps.googleapis.com/maps/api/geocode/json';
-    String url = '$baseUrl?latlng=$lat,$lng&key=$API_KEY&language=ko';
+    String url = '$baseUrl?latlng=$lat,$lng&key=$googleApiKey&language=ko';
 
     final http.Response response = await http.get(Uri.parse(url));
     final responseData = json.decode(response.body);
@@ -65,6 +67,6 @@ class GoogleMapServices {
   }
 
   static String getStaticMap(double latitude, double longitude) {
-    return 'https://maps.googleapis.com/maps/api/staticmap?center=&$latitude,$longitude&zoom=16&size=600x300&maptype=roadmap&markers=color:red%7Clabel:C%7C$latitude,$longitude&key=$API_KEY';
+    return 'https://maps.googleapis.com/maps/api/staticmap?center=&$latitude,$longitude&zoom=16&size=600x300&maptype=roadmap&markers=color:red%7Clabel:C%7C$latitude,$longitude&key=$googleApiKey';
   }
 }

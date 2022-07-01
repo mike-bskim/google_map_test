@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-// import 'package:place_picker/place_picker.dart';
-// import 'package:provider/provider.dart';
 
-import 'key.dart';
+import 'pages/place_autocomplete.dart';
 import 'pages/places_nearby.dart';
 import 'widgets/custom_button.dart';
 
@@ -41,32 +39,32 @@ class Home extends StatelessWidget {
                 );
               },
             ),
-            const SizedBox(height: 20),
-            CustomButton(
-              title: 'Place Picker',
-              onPressed: (){
-                debugPrint('Skip function');
-              },
-              // onPressed: () async {
-              //   LocationResult result = await Navigator.of(context).push(
-              //     MaterialPageRoute(
-              //       builder: (context) => PlacePicker(API_KEY),
-              //     ),
-              //   );
-              //
-              //   // Handle the result in your way
-              //   debugPrint(result.toString());
-              // },
-            ),
+            // const SizedBox(height: 20),
+            // CustomButton(
+            //   title: 'Place Picker',
+            //   onPressed: (){
+            //     debugPrint('Skip function');
+            //   },
+            //   // onPressed: () async {
+            //   //   LocationResult result = await Navigator.of(context).push(
+            //   //     MaterialPageRoute(
+            //   //       builder: (context) => PlacePicker(API_KEY),
+            //   //     ),
+            //   //   );
+            //   //
+            //   //   // Handle the result in your way
+            //   //   debugPrint(result.toString());
+            //   // },
+            // ),
             const SizedBox(height: 20),
             CustomButton(
               title: 'Place Autocomplete',
               onPressed: () {
-                // Navigator.of(context).push(
-                //   MaterialPageRoute(builder: (context) {
-                //     return PlaceAutocomplete();
-                //   }),
-                // );
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) {
+                    return const PlaceAutocomplete();
+                  }),
+                );
               },
             ),
             // const SizedBox(height: 20),
