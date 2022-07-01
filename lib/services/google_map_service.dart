@@ -10,6 +10,7 @@ class GoogleMapServices {
 
   GoogleMapServices({required this.sessionToken});
 
+// 검색어 관련 추천 결과를 리턴
   Future<List> getSuggestions(String query) async {
     const String baseUrl =
         'https://maps.googleapis.com/maps/api/place/autocomplete/json';
@@ -36,7 +37,7 @@ class GoogleMapServices {
     return suggestions;
   }
 
-  // token 은 세션이 끝날때까지 사용가능
+// token 은 sessionToken 값이고, 지명 id 를 전달하여 상세 정보를 리턴
   Future<PlaceDetail> getPlaceDetail(String placeId, String token) async {
     const String baseUrl =
         'https://maps.googleapis.com/maps/api/place/details/json';
@@ -53,6 +54,7 @@ class GoogleMapServices {
 
     return placeDetail;
   }
+
 
   static Future<String> getAddrFromLocation(double lat, double lng) async {
     const String baseUrl = 'https://maps.googleapis.com/maps/api/geocode/json';
